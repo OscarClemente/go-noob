@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/lib/pq"
 )
 
@@ -34,5 +37,20 @@ func Initialize(username, password, database string) (Database, error) {
 		return db, err
 	}
 	log.Println("Database connection established")
+
+	driver, err := postgres.WithInstance(conn, &postgres.Config{})
+	if err != nil {
+		return db, err
+	}
+	m, err := migrate.NewWithDatabaseInstance(
+		"file://home/db/migrations",
+		"noob_db", driver)
+	if err != nil {
+		fmt.Println("lol")
+		return db, err
+	}
+	m.Up() // or m.Step(2) if you want to explicitly set the number of migrations to run
+	log.Println("Migrations running")
+
 	return db, nil
 }

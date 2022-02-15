@@ -1,4 +1,4 @@
-FROM golang:1.17.6-alpine3.12 as builder
+FROM golang:1.17.7-alpine3.15 as builder
 COPY go.mod go.sum /go/src/github.com/OscarClemente/go-noob/
 WORKDIR /go/src/github.com/OscarClemente/go-noob/
 RUN go mod download
@@ -7,6 +7,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o build/go-noob git
 
 FROM alpine
 RUN apk add --no-cache ca-certificates && update-ca-certificates
-COPY --from=builder /go/src/github.com/OscarClemente/go-noob/build/bucketeer /usr/bin/go-noob
+COPY --from=builder /go/src/github.com/OscarClemente/go-noob/build/go-noob /usr/bin/go-noob
+COPY db/migrations/. /home/db/migrations/
 EXPOSE 8080 8080
 ENTRYPOINT ["/usr/bin/go-noob"]
