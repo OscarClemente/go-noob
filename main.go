@@ -4,7 +4,8 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"net"
+
+	//"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -12,15 +13,22 @@ import (
 	"time"
 
 	"github.com/OscarClemente/go-noob/db"
-	"github.com/OscarClemente/go-noob/handler"
+	//"github.com/OscarClemente/go-noob/handler"
+
+	gqlhandler "github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/OscarClemente/go-noob/graph"
+	"github.com/OscarClemente/go-noob/graph/generated"
 )
 
+const defaultPort = "8080"
+
 func main() {
-	addr := ":8080"
+	/*addr := ":8080"
 	listener, err := net.Listen("tcp", addr)
 	if err != nil {
 		log.Fatalf("Error occurred: %s", err.Error())
-	}
+	}*/
 	dbUser, dbPassword, dbName :=
 		os.Getenv("POSTGRES_USER"),
 		os.Getenv("POSTGRES_PASSWORD"),
@@ -31,7 +39,7 @@ func main() {
 	}
 	defer database.Conn.Close()
 
-	httpHandler := handler.NewHandler(database)
+	/*httpHandler := handler.NewHandler(database)
 	server := &http.Server{
 		Handler: httpHandler,
 	}
@@ -39,7 +47,21 @@ func main() {
 		server.Serve(listener)
 	}()
 	defer Stop(server)
-	log.Printf("Started server on %s", addr)
+	log.Printf("Started server on %s", addr)*/
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = defaultPort
+	}
+
+	srv := gqlhandler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
+
+	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
+	http.Handle("/query", srv)
+
+	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
+	log.Fatal(http.ListenAndServe(":"+port, nil))
+
 	ch := make(chan os.Signal, 1)
 	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
 	log.Println(fmt.Sprint(<-ch))
