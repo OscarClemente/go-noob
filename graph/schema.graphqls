@@ -2,27 +2,44 @@
 #
 # https://gqlgen.com/getting-started/
 
-type Todo {
+type Review {
   id: ID!
-  text: String!
-  done: Boolean!
+  artwork: String!
+  title: String!
+  content: String!
+  rating: Int!
   user: User!
 }
 
 type User {
   id: ID!
   name: String!
+  email: String!
+  friends: [User!]!
 }
 
 type Query {
-  todos: [Todo!]!
+  reviews: [Review!]!
+  users: [User!]!
 }
 
-input NewTodo {
-  text: String!
+input ReviewInput {
+  artwork: String!
+  title: String!
+  content: String!
+  rating: Int!
   userId: String!
 }
 
+input UserInput {
+  name: String!
+  email: String!
+  friends: [String!]!
+}
+
 type Mutation {
-  createTodo(input: NewTodo!): Todo!
+  createReview(input: ReviewInput!): Review!
+  updateReview(input: ReviewInput!): Review!
+  createUser(input: UserInput!): User!
+  updateUser(input: UserInput!): User!
 }
