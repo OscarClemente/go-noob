@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS reviews(
+    id SERIAL PRIMARY KEY,
+    game VARCHAR(100) NOT NULL,
+    title VARCHAR(100) NOT NULL,
+    content TEXT,
+    rating INTEGER,
+    user SERIAL FOREIGN KEY,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

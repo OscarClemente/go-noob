@@ -4,7 +4,7 @@
 
 type Review {
   id: ID!
-  artwork: String!
+  game: String!
   title: String!
   content: String!
   rating: Int!
