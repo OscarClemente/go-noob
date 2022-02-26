@@ -4,6 +4,6 @@ CREATE TABLE IF NOT EXISTS reviews(
     title VARCHAR(100) NOT NULL,
     content TEXT,
     rating INTEGER,
-    user SERIAL FOREIGN KEY,
+    author INTEGER,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

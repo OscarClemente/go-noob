@@ -8,11 +8,11 @@ type Review struct {
 	Title   string `json:"title"`
 	Content string `json:"content"`
 	Rating  int    `json:"rating"`
-	User    *User  `json:"user"`
+	User    string `json:"user"`
 }
 
 type ReviewInput struct {
-	Artwork string `json:"artwork"`
+	Game    string `json:"game"`
 	Title   string `json:"title"`
 	Content string `json:"content"`
 	Rating  int    `json:"rating"`
@@ -20,10 +20,10 @@ type ReviewInput struct {
 }
 
 type User struct {
-	ID      string  `json:"id"`
-	Name    string  `json:"name"`
-	Email   string  `json:"email"`
-	Friends []*User `json:"friends"`
+	ID      string `json:"id"`
+	Name    string `json:"name"`
+	Email   string `json:"email"`
+	Friends string `json:"friends"`
 }
 
 type UserInput struct {

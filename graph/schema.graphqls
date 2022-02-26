@@ -8,14 +8,14 @@ type Review {
   title: String!
   content: String!
   rating: Int!
-  user: User!
+  user: ID!
 }
 
 type User {
   id: ID!
   name: String!
   email: String!
-  friends: [User!]!
+  friends: ID!
 }
 
 type Query {
@@ -24,17 +24,17 @@ type Query {
 }
 
 input ReviewInput {
-  artwork: String!
+  game: String!
   title: String!
   content: String!
   rating: Int!
-  userId: String!
+  userId: ID!
 }
 
 input UserInput {
   name: String!
   email: String!
-  friends: [String!]!
+  friends: [ID!]!
 }
 
 type Mutation {

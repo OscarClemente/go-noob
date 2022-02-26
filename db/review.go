@@ -26,7 +26,7 @@ func (db Database) GetAllReviews() (*models.ReviewList, error) {
 func (db Database) AddReview(review *models.Review) error {
 	var id int
 	var createdAt string
-	query := `INSERT INTO reviews (game, title, content, rating, user) VALUES ($1, $2, $3, $4, $5) RETURNING id, created_at`
+	query := `INSERT INTO reviews (game, title, content, rating, author) VALUES ($1, $2, $3, $4, $5) RETURNING id, created_at`
 	err := db.Conn.QueryRow(query, review.Game, review.Title, review.Content, review.Rating, review.User).Scan(&id, &createdAt)
 	if err != nil {
 		return err
