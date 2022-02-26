@@ -4,7 +4,7 @@ type User struct {
 	ID      int    `json:"id"`
 	Name    string `json:"name"`
 	Email   string `json:"email"`
-	Friends []User `json:"friends"`
+	Friends int    `json:"friends"`
 }
 
 type UserList struct {

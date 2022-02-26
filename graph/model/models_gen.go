@@ -4,7 +4,7 @@ package model
 
 type Review struct {
 	ID      string `json:"id"`
-	Artwork string `json:"artwork"`
+	Game    string `json:"game"`
 	Title   string `json:"title"`
 	Content string `json:"content"`
 	Rating  int    `json:"rating"`

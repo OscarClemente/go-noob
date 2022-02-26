@@ -56,8 +56,8 @@ type ComplexityRoot struct {
 	}
 
 	Review struct {
-		Artwork func(childComplexity int) int
 		Content func(childComplexity int) int
+		Game    func(childComplexity int) int
 		ID      func(childComplexity int) int
 		Rating  func(childComplexity int) int
 		Title   func(childComplexity int) int
@@ -160,19 +160,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Users(childComplexity), true
 
-	case "Review.artwork":
-		if e.complexity.Review.Artwork == nil {
-			break
-		}
-
-		return e.complexity.Review.Artwork(childComplexity), true
-
 	case "Review.content":
 		if e.complexity.Review.Content == nil {
 			break
 		}
 
 		return e.complexity.Review.Content(childComplexity), true
+
+	case "Review.game":
+		if e.complexity.Review.Game == nil {
+			break
+		}
+
+		return e.complexity.Review.Game(childComplexity), true
 
 	case "Review.id":
 		if e.complexity.Review.ID == nil {
@@ -300,7 +300,7 @@ var sources = []*ast.Source{
 
 type Review {
   id: ID!
-  artwork: String!
+  game: String!
   title: String!
   content: String!
   rating: Int!
@@ -804,7 +804,7 @@ func (ec *executionContext) _Review_id(ctx context.Context, field graphql.Collec
 	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Review_artwork(ctx context.Context, field graphql.CollectedField, obj *model.Review) (ret graphql.Marshaler) {
+func (ec *executionContext) _Review_game(ctx context.Context, field graphql.CollectedField, obj *model.Review) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -822,7 +822,7 @@ func (ec *executionContext) _Review_artwork(ctx context.Context, field graphql.C
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Artwork, nil
+		return obj.Game, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2523,9 +2523,9 @@ func (ec *executionContext) _Review(ctx context.Context, sel ast.SelectionSet, o
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "artwork":
+		case "game":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Review_artwork(ctx, field, obj)
+				return ec._Review_game(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)

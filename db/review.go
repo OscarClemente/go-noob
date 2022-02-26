@@ -8,7 +8,7 @@ import (
 
 func (db Database) GetAllReviews() (*models.ReviewList, error) {
 	list := &models.ReviewList{}
-	rows, err := db.Conn.Query("SELECT * FROM review")
+	rows, err := db.Conn.Query("SELECT * FROM reviews")
 	if err != nil {
 		return list, err
 	}
@@ -23,34 +23,34 @@ func (db Database) GetAllReviews() (*models.ReviewList, error) {
 	return list, nil
 }
 
-func (db Database) AddReview(item *models.Item) error {
+func (db Database) AddReview(review *models.Review) error {
 	var id int
 	var createdAt string
-	query := `INSERT INTO items (name, description) VALUES ($1, $2) RETURNING id, created_at`
-	err := db.Conn.QueryRow(query, item.Name, item.Description).Scan(&id, &createdAt)
+	query := `INSERT INTO reviews (game, title, content, rating, user) VALUES ($1, $2, $3, $4, $5) RETURNING id, created_at`
+	err := db.Conn.QueryRow(query, review.Game, review.Title, review.Content, review.Rating, review.User).Scan(&id, &createdAt)
 	if err != nil {
 		return err
 	}
-	item.ID = id
-	item.CreatedAt = createdAt
+	review.ID = id
+	review.CreatedAt = createdAt
 	return nil
 }
 
-func (db Database) GetReviewById(itemId int) (models.Item, error) {
-	item := models.Item{}
-	query := `SELECT * FROM items WHERE id = $1;`
-	row := db.Conn.QueryRow(query, itemId)
-	switch err := row.Scan(&item.ID, &item.Name, &item.Description, &item.CreatedAt); err {
+func (db Database) GetReviewById(reviewId int) (models.Review, error) {
+	review := models.Review{}
+	query := `SELECT * FROM reviews WHERE id = $1;`
+	row := db.Conn.QueryRow(query, reviewId)
+	switch err := row.Scan(&review.ID, &review.Game, &review.Title, &review.Content, &review.Rating, &review.User, &review.CreatedAt); err {
 	case sql.ErrNoRows:
-		return item, ErrNoMatch
+		return review, ErrNoMatch
 	default:
-		return item, err
+		return review, err
 	}
 }
 
-func (db Database) DeleteReview(itemId int) error {
-	query := `DELETE FROM items WHERE id = $1;`
-	_, err := db.Conn.Exec(query, itemId)
+func (db Database) DeleteReview(reviewId int) error {
+	query := `DELETE FROM reviews WHERE id = $1;`
+	_, err := db.Conn.Exec(query, reviewId)
 	switch err {
 	case sql.ErrNoRows:
 		return ErrNoMatch
@@ -59,15 +59,15 @@ func (db Database) DeleteReview(itemId int) error {
 	}
 }
 
-func (db Database) UpdateReview(itemId int, itemData models.Item) (models.Item, error) {
-	item := models.Item{}
-	query := `UPDATE items SET name=$1, description=$2 WHERE id=$3 RETURNING id, name, description, created_at;`
-	err := db.Conn.QueryRow(query, itemData.Name, itemData.Description, itemId).Scan(&item.ID, &item.Name, &item.Description, &item.CreatedAt)
+func (db Database) UpdateReview(reviewId int, reviewData models.Review) (models.Review, error) {
+	review := models.Review{}
+	query := `UPDATE reviews SET game=$1, title=$2, content=$3, rating=$4  WHERE id=$5 RETURNING id, game, title, content, created_at;`
+	err := db.Conn.QueryRow(query, reviewData.Game, reviewData.Title, reviewData.Content, reviewData.Rating, reviewId).Scan(&review.ID, &review.Game, &review.Title, &review.Content, &review.CreatedAt)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return item, ErrNoMatch
+			return review, ErrNoMatch
 		}
-		return item, err
+		return review, err
 	}
-	return item, nil
+	return review, nil
 }
