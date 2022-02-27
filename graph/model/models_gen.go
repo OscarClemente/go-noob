@@ -12,6 +12,7 @@ type Review struct {
 }
 
 type ReviewInput struct {
+	ID      string `json:"id"`
 	Game    string `json:"game"`
 	Title   string `json:"title"`
 	Content string `json:"content"`
@@ -27,6 +28,7 @@ type User struct {
 }
 
 type UserInput struct {
+	ID      string   `json:"id"`
 	Name    string   `json:"name"`
 	Email   string   `json:"email"`
 	Friends []string `json:"friends"`

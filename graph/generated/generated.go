@@ -320,6 +320,7 @@ type Query {
 }
 
 input ReviewInput {
+  id: ID!
   game: String!
   title: String!
   content: String!
@@ -328,6 +329,7 @@ input ReviewInput {
 }
 
 input UserInput {
+  id: ID!
   name: String!
   email: String!
   friends: [ID!]!
@@ -2250,6 +2252,14 @@ func (ec *executionContext) unmarshalInputReviewInput(ctx context.Context, obj i
 
 	for k, v := range asMap {
 		switch k {
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			it.ID, err = ec.unmarshalNID2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "game":
 			var err error
 
@@ -2305,6 +2315,14 @@ func (ec *executionContext) unmarshalInputUserInput(ctx context.Context, obj int
 
 	for k, v := range asMap {
 		switch k {
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			it.ID, err = ec.unmarshalNID2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "name":
 			var err error
 

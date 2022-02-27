@@ -24,6 +24,7 @@ type Query {
 }
 
 input ReviewInput {
+  id: ID!
   game: String!
   title: String!
   content: String!
@@ -32,6 +33,7 @@ input ReviewInput {
 }
 
 input UserInput {
+  id: ID!
   name: String!
   email: String!
   friends: [ID!]!
