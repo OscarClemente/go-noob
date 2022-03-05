@@ -2,15 +2,6 @@
 
 package model
 
-type Review struct {
-	ID      string `json:"id"`
-	Game    string `json:"game"`
-	Title   string `json:"title"`
-	Content string `json:"content"`
-	Rating  int    `json:"rating"`
-	User    string `json:"user"`
-}
-
 type ReviewInput struct {
 	ID      string `json:"id"`
 	Game    string `json:"game"`
@@ -18,13 +9,6 @@ type ReviewInput struct {
 	Content string `json:"content"`
 	Rating  int    `json:"rating"`
 	UserID  string `json:"userId"`
-}
-
-type User struct {
-	ID      string `json:"id"`
-	Name    string `json:"name"`
-	Email   string `json:"email"`
-	Friends string `json:"friends"`
 }
 
 type UserInput struct {

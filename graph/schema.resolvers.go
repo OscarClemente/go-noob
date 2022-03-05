@@ -5,7 +5,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 	"strconv"
 
 	"github.com/OscarClemente/go-noob/graph/generated"
@@ -13,56 +12,56 @@ import (
 	"github.com/OscarClemente/go-noob/models"
 )
 
-func (r *mutationResolver) CreateReview(ctx context.Context, input model.ReviewInput) (*model.Review, error) {
+func (r *mutationResolver) CreateReview(ctx context.Context, input model.ReviewInput) (*models.Review, error) {
 	review := reviewInputToModel(input)
 	err := r.DB.AddReview(review)
 
-	return reviewToOutputModel(review), err
+	return review, err
 }
 
-func (r *mutationResolver) UpdateReview(ctx context.Context, input model.ReviewInput) (*model.Review, error) {
+func (r *mutationResolver) UpdateReview(ctx context.Context, input model.ReviewInput) (*models.Review, error) {
 	review := reviewInputToModel(input)
 	updatedReview, err := r.DB.UpdateReview(review.ID, *review)
 
-	return reviewToOutputModel(&updatedReview), err
+	return &updatedReview, err
 }
 
-func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput) (*model.User, error) {
+func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput) (*models.User, error) {
 	user := userInputToModel(input)
 	err := r.DB.AddUser(user)
 
-	return userToOutputModel(user), err
+	return user, err
 }
 
-func (r *mutationResolver) UpdateUser(ctx context.Context, input model.UserInput) (*model.User, error) {
+func (r *mutationResolver) UpdateUser(ctx context.Context, input model.UserInput) (*models.User, error) {
 	user := userInputToModel(input)
 	updatedUser, err := r.DB.UpdateUser(user.ID, *user)
 
-	return userToOutputModel(&updatedUser), err
+	return &updatedUser, err
 }
 
-func (r *queryResolver) Reviews(ctx context.Context) ([]*model.Review, error) {
+func (r *queryResolver) Reviews(ctx context.Context) ([]*models.Review, error) {
 	reviews, err := r.DB.GetAllReviews()
 	if err != nil || reviews == nil {
 		return nil, err
 	}
 
-	var output []*model.Review
+	var output []*models.Review
 	for _, review := range reviews.Reviews {
-		output = append(output, reviewToOutputModel(&review))
+		output = append(output, &review)
 	}
 	return output, err
 }
 
-func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
+func (r *queryResolver) Users(ctx context.Context) ([]*models.User, error) {
 	users, err := r.DB.GetAllUsers()
 	if err != nil || users == nil {
 		return nil, err
 	}
 
-	var output []*model.User
+	var output []*models.User
 	for _, user := range users.Users {
-		output = append(output, userToOutputModel(&user))
+		output = append(output, &user)
 	}
 	return output, err
 }
@@ -94,16 +93,6 @@ func reviewInputToModel(input model.ReviewInput) *models.Review {
 		User:    user,
 	}
 }
-func reviewToOutputModel(input *models.Review) *model.Review {
-	return &model.Review{
-		ID:      strconv.FormatInt(int64(input.ID), 10),
-		Game:    input.Game,
-		Title:   input.Title,
-		Content: input.Content,
-		Rating:  input.Rating,
-		User:    strconv.FormatInt(int64(input.User), 10),
-	}
-}
 func userInputToModel(input model.UserInput) *models.User {
 	id, _ := strconv.Atoi(input.ID)
 	var friend int
@@ -115,13 +104,5 @@ func userInputToModel(input model.UserInput) *models.User {
 		Name:    input.Name,
 		Email:   input.Email,
 		Friends: friend,
-	}
-}
-func userToOutputModel(input *models.User) *model.User {
-	return &model.User{
-		ID:      fmt.Sprint(input.ID),
-		Name:    input.Name,
-		Email:   input.Email,
-		Friends: strconv.FormatInt(int64(input.Friends), 10),
 	}
 }
