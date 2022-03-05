@@ -6,7 +6,7 @@ type Review struct {
 	Title     string `json:"title"`
 	Content   string `json:"description"`
 	Rating    int    `json:"rating"`
-	User      int    `json:"user"`
+	UserID    int    `json:"user"`
 	CreatedAt string `json:"created_at"`
 }
 

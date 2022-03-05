@@ -14,7 +14,7 @@ func (db Database) GetAllReviews() (*models.ReviewList, error) {
 	}
 	for rows.Next() {
 		var review models.Review
-		err := rows.Scan(&review.ID, &review.Game, &review.Title, &review.Content, &review.Rating, &review.User, &review.CreatedAt)
+		err := rows.Scan(&review.ID, &review.Game, &review.Title, &review.Content, &review.Rating, &review.UserID, &review.CreatedAt)
 		if err != nil {
 			return list, err
 		}
@@ -27,7 +27,7 @@ func (db Database) AddReview(review *models.Review) error {
 	var id int
 	var createdAt string
 	query := `INSERT INTO reviews (game, title, content, rating, author) VALUES ($1, $2, $3, $4, $5) RETURNING id, created_at`
-	err := db.Conn.QueryRow(query, review.Game, review.Title, review.Content, review.Rating, review.User).Scan(&id, &createdAt)
+	err := db.Conn.QueryRow(query, review.Game, review.Title, review.Content, review.Rating, review.UserID).Scan(&id, &createdAt)
 	if err != nil {
 		return err
 	}
@@ -40,7 +40,7 @@ func (db Database) GetReviewById(reviewId int) (models.Review, error) {
 	review := models.Review{}
 	query := `SELECT * FROM reviews WHERE id = $1;`
 	row := db.Conn.QueryRow(query, reviewId)
-	switch err := row.Scan(&review.ID, &review.Game, &review.Title, &review.Content, &review.Rating, &review.User, &review.CreatedAt); err {
+	switch err := row.Scan(&review.ID, &review.Game, &review.Title, &review.Content, &review.Rating, &review.UserID, &review.CreatedAt); err {
 	case sql.ErrNoRows:
 		return review, ErrNoMatch
 	default:

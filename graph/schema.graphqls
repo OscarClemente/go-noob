@@ -8,14 +8,14 @@ type Review {
   title: String!
   content: String!
   rating: Int!
-  user: ID!
+  user: User
 }
 
 type User {
   id: ID!
   name: String!
   email: String!
-  friends: ID!
+  friends: User
 }
 
 type Query {
