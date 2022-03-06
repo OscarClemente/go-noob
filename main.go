@@ -83,6 +83,30 @@ func tempSeedData(db *db.Database) {
 		Rating:  5,
 		UserID:  1,
 	})
+	db.AddReview(&models.Review{
+		ID:      3,
+		Game:    "Return of the Obra Dinn",
+		Title:   "Be a detective",
+		Content: "You feel like a real detective, great bell soundtrack.",
+		Rating:  4,
+		UserID:  1,
+	})
+	db.AddReview(&models.Review{
+		ID:      4,
+		Game:    "Dusk",
+		Title:   "Boom boom pow",
+		Content: "High speed gun canage.",
+		Rating:  5,
+		UserID:  2,
+	})
+	db.AddReview(&models.Review{
+		ID:      5,
+		Game:    "Doom",
+		Title:   "Classic shooter",
+		Content: "Nothing else to say.",
+		Rating:  5,
+		UserID:  2,
+	})
 	db.AddUser(&models.User{
 		ID:    1,
 		Name:  "Player1",

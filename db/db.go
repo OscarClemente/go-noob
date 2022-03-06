@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
@@ -27,18 +28,26 @@ func Initialize(username, password, database string) (Database, error) {
 	db := Database{}
 	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
 		HOST, PORT, username, password, database)
-	conn, err := sql.Open("postgres", dsn)
-	if err != nil {
-		return db, err
-	}
-	db.Conn = conn
-	err = db.Conn.Ping()
-	if err != nil {
-		return db, err
+	connected := false
+	for !connected {
+		conn, err := sql.Open("postgres", dsn)
+		if err != nil {
+			log.Printf("Could not set up database: %v, retrying.", err)
+			time.Sleep(3 * time.Second)
+			continue
+		}
+		db.Conn = conn
+		err = db.Conn.Ping()
+		if err != nil {
+			log.Printf("Could not set up database: %v, retrying.", err)
+			time.Sleep(3 * time.Second)
+			continue
+		}
+		connected = true
 	}
 	log.Println("Database connection established")
 
-	driver, err := postgres.WithInstance(conn, &postgres.Config{})
+	driver, err := postgres.WithInstance(db.Conn, &postgres.Config{})
 	if err != nil {
 		return db, err
 	}
