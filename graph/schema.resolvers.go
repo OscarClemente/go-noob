@@ -48,7 +48,8 @@ func (r *queryResolver) Reviews(ctx context.Context) ([]*models.Review, error) {
 
 	var output []*models.Review
 	for _, review := range reviews.Reviews {
-		output = append(output, &review)
+		reviewOutput := review
+		output = append(output, &reviewOutput)
 	}
 	return output, err
 }
@@ -61,7 +62,8 @@ func (r *queryResolver) Users(ctx context.Context) ([]*models.User, error) {
 
 	var output []*models.User
 	for _, user := range users.Users {
-		output = append(output, &user)
+		userOutput := user
+		output = append(output, &userOutput)
 	}
 	return output, err
 }
@@ -75,13 +77,13 @@ func (r *reviewResolver) User(ctx context.Context, obj *models.Review) (*models.
 	return &user, nil
 }
 
-func (r *userResolver) Friends(ctx context.Context, obj *models.User) (*models.User, error) {
-	user, err := r.DB.GetUserById(obj.Friends)
+func (r *userResolver) Friends(ctx context.Context, obj *models.User) ([]*models.User, error) {
+	users, err := r.DB.GetFriendsOfUserById(obj.ID)
 	if err != nil {
 		return nil, err
 	}
 
-	return &user, nil
+	return users, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.
@@ -121,14 +123,9 @@ func reviewInputToModel(input model.ReviewInput) *models.Review {
 }
 func userInputToModel(input model.UserInput) *models.User {
 	id, _ := strconv.Atoi(input.ID)
-	var friend int
-	if len(input.Friends) > 0 {
-		friend, _ = strconv.Atoi(input.Friends[0])
-	}
 	return &models.User{
-		ID:      id,
-		Name:    input.Name,
-		Email:   input.Email,
-		Friends: friend,
+		ID:    id,
+		Name:  input.Name,
+		Email: input.Email,
 	}
 }

@@ -13,6 +13,8 @@ import (
 	"time"
 
 	"github.com/OscarClemente/go-noob/db"
+	"github.com/OscarClemente/go-noob/models"
+
 	//"github.com/OscarClemente/go-noob/handler"
 
 	gqlhandler "github.com/99designs/gqlgen/graphql/handler"
@@ -39,16 +41,6 @@ func main() {
 	}
 	defer database.Conn.Close()
 
-	/*httpHandler := handler.NewHandler(database)
-	server := &http.Server{
-		Handler: httpHandler,
-	}
-	go func() {
-		server.Serve(listener)
-	}()
-	defer Stop(server)
-	log.Printf("Started server on %s", addr)*/
-
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = defaultPort
@@ -59,6 +51,8 @@ func main() {
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", srv)
 
+	tempSeedData(&database)
+
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 
@@ -66,6 +60,41 @@ func main() {
 	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
 	log.Println(fmt.Sprint(<-ch))
 	log.Println("Stopping API server.")
+}
+
+func tempSeedData(db *db.Database) {
+	reviews, err := db.GetAllReviews()
+	if err != nil || reviews == nil || len(reviews.Reviews) > 0 {
+		return
+	}
+	db.AddReview(&models.Review{
+		ID:      1,
+		Game:    "Sable",
+		Title:   "Chill exploration",
+		Content: "Cool game in gamepass, entertaining and chill.",
+		Rating:  4,
+		UserID:  1,
+	})
+	db.AddReview(&models.Review{
+		ID:      2,
+		Game:    "Outer wilds",
+		Title:   "Best game",
+		Content: "Cool game in gamepass, nice world and great wow factor.",
+		Rating:  5,
+		UserID:  1,
+	})
+	db.AddUser(&models.User{
+		ID:    1,
+		Name:  "Player1",
+		Email: "player1@xbox.com",
+	})
+	db.AddUser(&models.User{
+		ID:    2,
+		Name:  "Player2",
+		Email: "player2@steam.com",
+	})
+	db.AddFriendToUser(1, 2)
+	db.AddFriendToUser(2, 1)
 }
 
 func Stop(server *http.Server) {

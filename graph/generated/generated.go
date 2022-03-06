@@ -89,7 +89,7 @@ type ReviewResolver interface {
 	User(ctx context.Context, obj *models.Review) (*models.User, error)
 }
 type UserResolver interface {
-	Friends(ctx context.Context, obj *models.User) (*models.User, error)
+	Friends(ctx context.Context, obj *models.User) ([]*models.User, error)
 }
 
 type executableSchema struct {
@@ -320,7 +320,7 @@ type User {
   id: ID!
   name: String!
   email: String!
-  friends: User
+  friends: [User!]!
 }
 
 type Query {
@@ -1117,11 +1117,14 @@ func (ec *executionContext) _User_friends(ctx context.Context, field graphql.Col
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*models.User)
+	res := resTmp.([]*models.User)
 	fc.Result = res
-	return ec.marshalOUser2ᚖgithubᚗcomᚋOscarClementeᚋgoᚑnoobᚋmodelsᚐUser(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚕᚖgithubᚗcomᚋOscarClementeᚋgoᚑnoobᚋmodelsᚐUserᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) (ret graphql.Marshaler) {
@@ -2662,6 +2665,9 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 					}
 				}()
 				res = ec._User_friends(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
 				return res
 			}
 

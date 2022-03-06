@@ -14,7 +14,7 @@ func (db Database) GetAllUsers() (*models.UserList, error) {
 	}
 	for rows.Next() {
 		var user models.User
-		err := rows.Scan(&user.ID, &user.Name, &user.Email, &user.Friends)
+		err := rows.Scan(&user.ID, &user.Name, &user.Email)
 		if err != nil {
 			return list, err
 		}
@@ -25,8 +25,8 @@ func (db Database) GetAllUsers() (*models.UserList, error) {
 
 func (db Database) AddUser(user *models.User) error {
 	var id int
-	query := `INSERT INTO users (name, email, friends) VALUES ($1, $2, $3) RETURNING id`
-	err := db.Conn.QueryRow(query, user.Name, user.Email, user.Friends).Scan(&id)
+	query := `INSERT INTO users (name, email) VALUES ($1, $2) RETURNING id`
+	err := db.Conn.QueryRow(query, user.Name, user.Email).Scan(&id)
 	if err != nil {
 		return err
 	}
@@ -38,12 +38,43 @@ func (db Database) GetUserById(userId int) (models.User, error) {
 	user := models.User{}
 	query := `SELECT * FROM users WHERE id = $1;`
 	row := db.Conn.QueryRow(query, userId)
-	switch err := row.Scan(&user.ID, &user.Name, &user.Email, &user.Friends); err {
+	switch err := row.Scan(&user.ID, &user.Name, &user.Email); err {
 	case sql.ErrNoRows:
 		return user, ErrNoMatch
 	default:
 		return user, err
 	}
+}
+
+func (db Database) AddFriendToUser(userId, friendId int) error {
+	var id int
+	query := `INSERT INTO friends (username, friend) VALUES ($1, $2) RETURNING id`
+	err := db.Conn.QueryRow(query, userId, friendId).Scan(&id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (db Database) GetFriendsOfUserById(userId int) ([]*models.User, error) {
+	users := []*models.User{}
+	query := `SELECT users.ID, users.Name, users.Email
+		FROM friends
+		INNER JOIN users ON users.id = friends.friend
+		WHERE friends.username = $1;`
+	rows, err := db.Conn.Query(query, userId)
+	if err != nil {
+		return users, err
+	}
+	for rows.Next() {
+		var user models.User
+		err := rows.Scan(&user.ID, &user.Name, &user.Email)
+		if err != nil {
+			return users, err
+		}
+		users = append(users, &user)
+	}
+	return users, nil
 }
 
 func (db Database) DeleteUser(userId int) error {
@@ -59,8 +90,8 @@ func (db Database) DeleteUser(userId int) error {
 
 func (db Database) UpdateUser(userId int, userData models.User) (models.User, error) {
 	user := models.User{}
-	query := `UPDATE users SET name=$1, email=$2, friends=$3 WHERE id=$5 RETURNING id, game, title, content, created_at;`
-	err := db.Conn.QueryRow(query, userData.Name, userData.Email, userData.Friends, userId).Scan(&user.ID, &user.Name, &user.Email, &user.Friends)
+	query := `UPDATE users SET name=$1, email=$2 WHERE id=$5 RETURNING id, game, title, content, created_at;`
+	err := db.Conn.QueryRow(query, userData.Name, userData.Email, userId).Scan(&user.ID, &user.Name, &user.Email)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return user, ErrNoMatch
