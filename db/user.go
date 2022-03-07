@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 
 	"github.com/OscarClemente/go-noob/models"
 )
@@ -35,6 +36,7 @@ func (db Database) AddUser(user *models.User) error {
 }
 
 func (db Database) GetUserById(userId int) (models.User, error) {
+	fmt.Println("GetUserById", userId)
 	user := models.User{}
 	query := `SELECT * FROM users WHERE id = $1;`
 	row := db.Conn.QueryRow(query, userId)

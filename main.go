@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 
-	//"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -14,8 +13,6 @@ import (
 
 	"github.com/OscarClemente/go-noob/db"
 	"github.com/OscarClemente/go-noob/models"
-
-	//"github.com/OscarClemente/go-noob/handler"
 
 	gqlhandler "github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
@@ -26,11 +23,6 @@ import (
 const defaultPort = "8080"
 
 func main() {
-	/*addr := ":8080"
-	listener, err := net.Listen("tcp", addr)
-	if err != nil {
-		log.Fatalf("Error occurred: %s", err.Error())
-	}*/
 	dbUser, dbPassword, dbName :=
 		os.Getenv("POSTGRES_USER"),
 		os.Getenv("POSTGRES_PASSWORD"),
@@ -95,7 +87,7 @@ func tempSeedData(db *db.Database) {
 		ID:      4,
 		Game:    "Dusk",
 		Title:   "Boom boom pow",
-		Content: "High speed gun canage.",
+		Content: "High speed gun carnage.",
 		Rating:  5,
 		UserID:  2,
 	})
