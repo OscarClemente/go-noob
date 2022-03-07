@@ -75,12 +75,19 @@ github.com/matryer/moq/pkg/moq
 # github.com/mitchellh/mapstructure v1.2.3
 ## explicit; go 1.14
 github.com/mitchellh/mapstructure
+# github.com/pkg/errors v0.9.1
+## explicit
+github.com/pkg/errors
 # github.com/russross/blackfriday/v2 v2.1.0
 ## explicit
 github.com/russross/blackfriday/v2
 # github.com/urfave/cli/v2 v2.3.0
 ## explicit; go 1.11
 github.com/urfave/cli/v2
+# github.com/vektah/dataloaden v0.3.0
+## explicit
+github.com/vektah/dataloaden
+github.com/vektah/dataloaden/pkg/generator
 # github.com/vektah/gqlparser/v2 v2.2.0
 ## explicit; go 1.13
 github.com/vektah/gqlparser/v2

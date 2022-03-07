@@ -5,8 +5,10 @@ package graph
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 
+	"github.com/OscarClemente/go-noob/dataloader"
 	"github.com/OscarClemente/go-noob/graph/generated"
 	"github.com/OscarClemente/go-noob/graph/model"
 	"github.com/OscarClemente/go-noob/models"
@@ -69,12 +71,14 @@ func (r *queryResolver) Users(ctx context.Context) ([]*models.User, error) {
 }
 
 func (r *reviewResolver) User(ctx context.Context, obj *models.Review) (*models.User, error) {
-	user, err := r.DB.GetUserById(obj.UserID)
+	fmt.Println("GetUserById", obj.UserID)
+	return dataloader.For(ctx).UserById.Load(obj.UserID)
+	/*user, err := r.DB.GetUserById(obj.UserID)
 	if err != nil {
 		return nil, err
 	}
 
-	return &user, nil
+	return &user, nil*/
 }
 
 func (r *userResolver) Friends(ctx context.Context, obj *models.User) ([]*models.User, error) {

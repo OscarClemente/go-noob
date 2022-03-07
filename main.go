@@ -16,6 +16,7 @@ import (
 
 	gqlhandler "github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/OscarClemente/go-noob/dataloader"
 	"github.com/OscarClemente/go-noob/graph"
 	"github.com/OscarClemente/go-noob/graph/generated"
 )
@@ -41,7 +42,7 @@ func main() {
 	srv := gqlhandler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{DB: database}}))
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", srv)
+	http.Handle("/query", dataloader.Middleware(database, srv))
 
 	tempSeedData(&database)
 

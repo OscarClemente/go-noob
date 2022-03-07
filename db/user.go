@@ -48,6 +48,33 @@ func (db Database) GetUserById(userId int) (models.User, error) {
 	}
 }
 
+func (db Database) GetUsersById(userIds []int) ([]*models.User, error) {
+	users := []*models.User{}
+	joinIds := ""
+	for i, userId := range userIds {
+		joinIds = joinIds + fmt.Sprint(userId)
+		if i < len(userIds)-1 {
+			joinIds = joinIds + ","
+		}
+	}
+
+	query := `SELECT * FROM users WHERE id IN(` + joinIds + `);`
+	rows, err := db.Conn.Query(query)
+	if err != nil {
+		fmt.Println("Error fetching user ids", err)
+		return users, err
+	}
+	for rows.Next() {
+		var user models.User
+		err := rows.Scan(&user.ID, &user.Name, &user.Email)
+		if err != nil {
+			return users, err
+		}
+		users = append(users, &user)
+	}
+	return users, nil
+}
+
 func (db Database) AddFriendToUser(userId, friendId int) error {
 	var id int
 	query := `INSERT INTO friends (username, friend) VALUES ($1, $2) RETURNING id`

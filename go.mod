@@ -8,6 +8,7 @@ require (
 	github.com/go-chi/render v1.0.1
 	github.com/golang-migrate/migrate/v4 v4.15.1
 	github.com/lib/pq v1.10.4
+	github.com/vektah/dataloaden v0.3.0
 	github.com/vektah/gqlparser/v2 v2.2.0
 )
 
@@ -20,6 +21,7 @@ require (
 	github.com/hashicorp/golang-lru v0.5.1 // indirect
 	github.com/matryer/moq v0.2.3 // indirect
 	github.com/mitchellh/mapstructure v1.2.3 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/urfave/cli/v2 v2.3.0 // indirect
 	go.uber.org/atomic v1.6.0 // indirect
