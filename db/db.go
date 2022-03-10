@@ -13,8 +13,8 @@ import (
 )
 
 const (
-	HOST = "database"
-	PORT = 5432
+	HOST = "localhost"
+	PORT = 8087
 )
 
 // ErrNoMatch is returned when we request a row that doesn't exist
@@ -33,6 +33,7 @@ func Initialize(username, password, database string) (Database, error) {
 		conn, err := sql.Open("postgres", dsn)
 		if err != nil {
 			log.Printf("Could not set up database: %v, retrying.", err)
+			log.Println("miau", dsn)
 			time.Sleep(3 * time.Second)
 			continue
 		}
@@ -40,6 +41,7 @@ func Initialize(username, password, database string) (Database, error) {
 		err = db.Conn.Ping()
 		if err != nil {
 			log.Printf("Could not set up database: %v, retrying.", err)
+			log.Println("guau", dsn)
 			time.Sleep(3 * time.Second)
 			continue
 		}
@@ -49,10 +51,11 @@ func Initialize(username, password, database string) (Database, error) {
 
 	driver, err := postgres.WithInstance(db.Conn, &postgres.Config{})
 	if err != nil {
+		fmt.Println("error on with instance")
 		return db, err
 	}
 	m, err := migrate.NewWithDatabaseInstance(
-		"file://home/db/migrations",
+		"file://db/migrations",
 		"noob_db", driver)
 	if err != nil {
 		fmt.Println("lol")

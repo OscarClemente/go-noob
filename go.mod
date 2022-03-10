@@ -4,6 +4,7 @@ go 1.17
 
 require (
 	github.com/99designs/gqlgen v0.16.0
+	github.com/fergusstrange/embedded-postgres v1.15.0
 	github.com/go-chi/chi v1.5.4
 	github.com/go-chi/render v1.0.1
 	github.com/golang-migrate/migrate/v4 v4.15.1
@@ -22,6 +23,7 @@ require (
 	github.com/mitchellh/mapstructure v1.2.3 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/urfave/cli/v2 v2.3.0 // indirect
+	github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8 // indirect
 	go.uber.org/atomic v1.6.0 // indirect
 	golang.org/x/mod v0.4.2 // indirect
 	golang.org/x/sys v0.0.0-20211013075003-97ac67df715c // indirect
