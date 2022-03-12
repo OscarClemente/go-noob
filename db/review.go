@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 
 	"github.com/OscarClemente/go-noob/models"
 )
@@ -12,7 +13,9 @@ func (db Database) GetAllReviews() (*models.ReviewList, error) {
 	if err != nil {
 		return list, err
 	}
+	fmt.Println("Getting rows")
 	for rows.Next() {
+		fmt.Println("row.Next")
 		var review models.Review
 		err := rows.Scan(&review.ID, &review.Game, &review.Title, &review.Content, &review.Rating, &review.UserID, &review.CreatedAt)
 		if err != nil {

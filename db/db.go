@@ -49,20 +49,23 @@ func Initialize(username, password, database string) (Database, error) {
 	}
 	log.Println("Database connection established")
 
+	return db, nil
+}
+
+func Migrations(db Database) error {
 	driver, err := postgres.WithInstance(db.Conn, &postgres.Config{})
 	if err != nil {
 		fmt.Println("error on with instance")
-		return db, err
+		return err
 	}
 	m, err := migrate.NewWithDatabaseInstance(
 		"file://db/migrations",
 		"noob_db", driver)
 	if err != nil {
 		fmt.Println("lol")
-		return db, err
+		return err
 	}
 	m.Up() // or m.Step(2) if you want to explicitly set the number of migrations to run
 	log.Println("Migrations running")
-
-	return db, nil
+	return nil
 }
